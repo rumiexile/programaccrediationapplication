@@ -664,7 +664,7 @@ window.SCHEMA = (function () {
           id: "r-review",
           title: "Rapor önizlemesi",
           short: "Önizleme ve gönderim",
-          desc: "Rapor, şablondaki özgün bölüm sırasıyla aşağıda derlenir. Yazdırabilir, Word belgesi ya da JSON olarak indirebilirsiniz.",
+          desc: "Rapor, şablondaki özgün bölüm sırasıyla aşağıda derlenir.",
           review: true,
           fields: [],
         },

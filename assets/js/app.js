@@ -14,6 +14,28 @@
   var tabs = window.SCHEMA.tabs;
   var state = { tab: 0, step: 0 };
 
+  // Gömülü görüntüleyicide (ör. Claude Artifact) indirme ve yazdırma kapalıdır
+  var EMBEDDED = !!window.EMBEDDED_MODE;
+
+  function copyJSON() {
+    var text = S.exportJSON();
+    function fallback() {
+      dialog("JSON metni", [
+        el("p", { text: "Pano erişimi kapalı. Metni seçip kopyalayın:" }),
+        el("textarea", { class: "textarea", rows: "10", readonly: true, text: text, onfocus: function (e) {
+          e.target.select();
+        } }),
+      ], [{ label: "Kapat", cls: "btn--secondary" }]);
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () {
+        toast("Rapor verisi panoya kopyalandı.", "success");
+      }, fallback);
+    } catch (e) {
+      fallback();
+    }
+  }
+
   /* ==================================================================
      İlerleme hesabı
      ================================================================== */
@@ -107,19 +129,25 @@
     });
     host.appendChild(themeBtn);
 
-    var wordBtn = el("button", { type: "button", class: "btn btn--secondary btn--sm", title: "Word belgesi olarak indir" }, [icon("file", "btn__icon"), el("span", { class: "btn-label", text: "Word" })]);
-    wordBtn.addEventListener("click", function () {
-      window.Report.wordFile();
-      toast("Rapor Word belgesi olarak indirildi.", "success");
-    });
-    host.appendChild(wordBtn);
+    if (EMBEDDED) {
+      var copyBtn = el("button", { type: "button", class: "btn btn--secondary btn--sm", title: "Rapor verisini JSON olarak panoya kopyala" }, [icon("copy", "btn__icon"), el("span", { class: "btn-label", text: "JSON kopyala" })]);
+      copyBtn.addEventListener("click", copyJSON);
+      host.appendChild(copyBtn);
+    } else {
+      var wordBtn = el("button", { type: "button", class: "btn btn--secondary btn--sm", title: "Word belgesi olarak indir" }, [icon("file", "btn__icon"), el("span", { class: "btn-label", text: "Word" })]);
+      wordBtn.addEventListener("click", function () {
+        window.Report.wordFile();
+        toast("Rapor Word belgesi olarak indirildi.", "success");
+      });
+      host.appendChild(wordBtn);
 
-    var exportBtn = el("button", { type: "button", class: "btn btn--secondary btn--sm", title: "Dışa aktar (JSON)" }, [icon("download", "btn__icon"), el("span", { class: "btn-label", text: "Dışa aktar" })]);
-    exportBtn.addEventListener("click", function () {
-      S.download();
-      toast("Rapor verisi JSON olarak indirildi.", "success");
-    });
-    host.appendChild(exportBtn);
+      var exportBtn = el("button", { type: "button", class: "btn btn--secondary btn--sm", title: "Dışa aktar (JSON)" }, [icon("download", "btn__icon"), el("span", { class: "btn-label", text: "Dışa aktar" })]);
+      exportBtn.addEventListener("click", function () {
+        S.download();
+        toast("Rapor verisi JSON olarak indirildi.", "success");
+      });
+      host.appendChild(exportBtn);
+    }
 
     var fileInput = el("input", { type: "file", accept: ".json,application/json", class: "sr-only", id: "import-file" });
     fileInput.addEventListener("change", function () {
@@ -516,17 +544,22 @@
       b.addEventListener("click", fn);
       actions.appendChild(b);
     }
-    act("Yazdır / PDF", "print", "btn--secondary", function () {
-      window.print();
-    });
-    act("Word belgesi (.doc)", "file", "btn--secondary", function () {
-      window.Report.wordFile();
-      toast("Rapor Word belgesi olarak indirildi.", "success");
-    });
-    act("JSON", "download", "btn--secondary", function () {
-      S.download();
-      toast("Rapor verisi JSON olarak indirildi.", "success");
-    });
+    if (EMBEDDED) {
+      act("JSON'u panoya kopyala", "copy", "btn--secondary", copyJSON);
+      actions.appendChild(el("p", { class: "review-actions__note", text: "Bu görünümde dosya indirme ve yazdırma kapalıdır. Word, PDF ve JSON dosyası için uygulamanın tek dosyalık sürümünü kullanın; kopyaladığınız JSON'u orada “İçe aktar” ile açabilirsiniz." }));
+    } else {
+      act("Yazdır / PDF", "print", "btn--secondary", function () {
+        window.print();
+      });
+      act("Word belgesi (.doc)", "file", "btn--secondary", function () {
+        window.Report.wordFile();
+        toast("Rapor Word belgesi olarak indirildi.", "success");
+      });
+      act("JSON", "download", "btn--secondary", function () {
+        S.download();
+        toast("Rapor verisi JSON olarak indirildi.", "success");
+      });
+    }
     host.appendChild(actions);
 
     var paper = el("article", { class: "doc", html: window.Report.html() });
@@ -686,13 +719,16 @@
       ]),
     ], [
       { label: "Kapat", cls: "btn--secondary" },
+    ].concat(EMBEDDED ? [
+      { label: "JSON'u kopyala", cls: "btn--primary", fn: copyJSON },
+    ] : [
       { label: "JSON indir", cls: "btn--secondary", fn: function () {
         S.download();
       } },
       { label: "Word belgesi indir", cls: "btn--primary", fn: function () {
         window.Report.wordFile();
       } },
-    ]);
+    ]));
   }
 
   /* ==================================================================

@@ -833,6 +833,12 @@
   margin: var(--space-5) 0;
 }
 
+.review-actions__note {
+  flex-basis: 100%;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
 .doc-frame {
   padding: var(--space-6);
   border-radius: var(--radius-xl);
