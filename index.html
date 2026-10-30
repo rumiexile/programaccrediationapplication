@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YÖKAK · Program Akreditasyon Raporu</title>
+    <meta
+      name="description"
+      content="YÖKAK program akreditasyon ölçütleri ve TYÇ Yeterlilik Tür Belirleyicisi esas alınarak hazırlanan Program Akreditasyon Raporu web formu."
+    />
+    <meta name="color-scheme" content="light dark" />
+
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+    <link rel="stylesheet" href="assets/css/glass.css" />
+    <link rel="stylesheet" href="assets/css/app.css" />
+    <link rel="stylesheet" href="assets/css/report.css" />
+
+    <link rel="icon" href="assets/img/logo.png" />
+  </head>
+
+  <body>
+    <!-- Ortam aurası -->
+    <div class="aurora" aria-hidden="true">
+      <span class="aurora__blob aurora__blob--1"></span>
+      <span class="aurora__blob aurora__blob--2"></span>
+      <span class="aurora__blob aurora__blob--3"></span>
+    </div>
+
+    <a class="skip-link" href="#stepview">Ana içeriğe geç</a>
+
+    <div class="app">
+      <!-- ============================ ÜST BAR ============================ -->
+      <header class="app-header glass">
+        <a class="brand" href="#" onclick="return false">
+          <img class="brand__mark" src="assets/img/logo.png" width="303" height="176" alt="" aria-hidden="true" />
+          <span class="brand__text">
+            <span class="brand__name">YÖKAK</span>
+            <span class="brand__sub">Program Akreditasyonu</span>
+          </span>
+        </a>
+
+        <span class="app-header__divider" aria-hidden="true"></span>
+
+        <span class="app-header__context">
+          <span class="app-header__context-label">Rapor</span>
+          <span class="app-header__context-value">Program Akreditasyon Raporu · Bireysel Süreç</span>
+        </span>
+
+        <span class="app-header__spacer"></span>
+
+        <div class="app-header__actions" id="header-actions"></div>
+      </header>
+
+      <!-- ============================ GÖVDE ============================= -->
+      <div class="app-body">
+        <aside class="app-sidebar" id="sidebar"></aside>
+
+        <main class="app-main">
+          <div class="tabbar-wrap">
+            <nav class="tabbar glass" id="tabbar"></nav>
+            <div id="topprogress"></div>
+          </div>
+
+          <div id="stepview"></div>
+        </main>
+      </div>
+    </div>
+
+    <div class="toast-region" id="toasts" aria-live="polite" aria-atomic="false"></div>
+    <dialog class="modal" id="confirm-dialog"></dialog>
+
+    <!-- ============================ BETİKLER ========================== -->
+    <script src="assets/data/template.js"></script>
+    <script src="assets/data/criteria.js"></script>
+    <script src="assets/js/store.js"></script>
+    <script src="assets/js/rules.js"></script>
+    <script src="assets/js/fields.js"></script>
+    <script src="assets/js/schema.js"></script>
+    <script src="assets/js/report.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
